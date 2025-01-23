@@ -120,16 +120,16 @@ The application provides a comprehensive set of features for librarians to manag
 ## Screenshots
 
 ### Login Page
-![Login Page](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/login.png)
+![Login Page](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/login.png)
 
 ### Book Management Page
-![Book Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/book_management.png)
+![Book Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/book.png)
 
 ### Student Management Page
-![Student Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/student_management.png)
+![Student Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/student.png)
 
-### Issue Book Page
-![Issue Book](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/issue_book.png)
+### User Management Page
+![Issue Book]()
 
 ---
 
