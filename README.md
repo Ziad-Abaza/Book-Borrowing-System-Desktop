@@ -219,7 +219,7 @@ This project is licensed under the **MIT License**. Feel free to use, modify, an
 ## Contact
 
 For any queries or feedback, please contact:
-- **Email**: ziad.abaza@example.com
+- **Email**: ziad.abaza@gmail.com
 - **GitHub**: [Ziad-Abaza](https://github.com/Ziad-Abaza)
 
 ---
