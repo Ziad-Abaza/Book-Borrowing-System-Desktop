@@ -38,12 +38,6 @@ CREATE TABLE `book` (
   `studentid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `book`
---
-
-INSERT INTO `book` (`id`, `name`, `publisher`, `price`, `status`, `issuedate`, `duedate`, `studentid`) VALUES
-(4, 'المحقق كونان', 'كونان دويل', 1230.00, 'issued', '2025-01-23', '2025-01-30', 1);
 
 -- --------------------------------------------------------
 
@@ -60,10 +54,6 @@ CREATE TABLE `login` (
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`userid`, `password`) VALUES
-('ziad hassan', '12345678'),
-('ziad@gmo.co', 'ziad1234');
-
 -- --------------------------------------------------------
 
 --
@@ -77,13 +67,6 @@ CREATE TABLE `student` (
   `branch` varchar(50) NOT NULL,
   `semester` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `student`
---
-
-INSERT INTO `student` (`id`, `name`, `course`, `branch`, `semester`) VALUES
-(1, 'ziad hassan', 'software', 'it', '3');
 
 --
 -- Indexes for dumped tables
