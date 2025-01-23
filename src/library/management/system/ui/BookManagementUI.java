@@ -22,37 +22,20 @@ public class BookManagementUI extends JFrame {
     private JTextField searchField;
 
 public BookManagementUI() {
-    // إعداد الإطار الرئيسي
-    setTitle("إدارة الكتب - نظام إدارة المكتبة");
-    setSize(1200, 800);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setLocationRelativeTo(null); // لجعل النافذة في وسط الشاشة
+        // إعداد الإطار الرئيسي
+        setTitle("إدارة المستخدمين - نظام إدارة المكتبة");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-    // إنشاء لوحة رئيسية
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BorderLayout());
-    mainPanel.setBackground(new Color(245, 245, 245));
+        // إنشاء لوحة رئيسية
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-    // لوحة العنوان
-    JPanel titlePanel = new JPanel(new BorderLayout());
-    titlePanel.setBackground(new Color(70, 130, 180));
-
-    // زر Home
-    JButton homeButton = new JButton();
-    homeButton.setIcon(new ImageIcon("path/to/home_icon.png")); // استبدل بمسار أيقونة المنزل
-    homeButton.setBackground(new Color(70, 130, 180));
-    homeButton.setForeground(Color.WHITE);
-    homeButton.setFocusPainted(false);
-    homeButton.addActionListener(e -> showHomePage());
-    titlePanel.add(homeButton, BorderLayout.WEST);
-
-    // عنوان الواجهة
-    JLabel titleLabel = new JLabel("إدارة الكتب");
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-    titleLabel.setForeground(Color.WHITE);
-    titlePanel.add(titleLabel, BorderLayout.CENTER);
-
-    mainPanel.add(titlePanel, BorderLayout.NORTH);
+        // إضافة HeaderPanel
+        HeaderPanel headerPanel = new HeaderPanel("إدارة الكتب");
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
 
     // لوحة الجدول
     JPanel tablePanel = new JPanel();
@@ -172,57 +155,6 @@ public BookManagementUI() {
 
     // تحديث الجدول عند فتح الواجهة
     refreshBookTable();
-}
-
-// عرض صفحة الخدمات المتاحة
-private void showHomePage() {
-    JDialog homeDialog = new JDialog(this, "الخدمات المتاحة", true);
-    homeDialog.setSize(400, 300);
-    homeDialog.setLocationRelativeTo(this);
-
-    JPanel mainPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-    // زر إدارة الكتب
-    JButton bookManagementButton = new JButton("إدارة الكتب");
-    bookManagementButton.setFont(new Font("Arial", Font.BOLD, 16));
-    bookManagementButton.setBackground(new Color(70, 130, 180));
-    bookManagementButton.setForeground(Color.WHITE);
-    bookManagementButton.setFocusPainted(false);
-    bookManagementButton.addActionListener(e -> {
-        homeDialog.dispose();
-        new BookManagementUI().setVisible(true);
-    });
-    mainPanel.add(bookManagementButton);
-
-    // زر إدارة المستخدمين
-    JButton userManagementButton = new JButton("إدارة المستخدمين");
-    userManagementButton.setFont(new Font("Arial", Font.BOLD, 16));
-    userManagementButton.setBackground(new Color(50, 205, 50));
-    userManagementButton.setForeground(Color.WHITE);
-    userManagementButton.setFocusPainted(false);
-    userManagementButton.addActionListener(e -> {
-        homeDialog.dispose();
-        // افتح واجهة إدارة المستخدمين (إذا كانت موجودة)
-        // new UserManagementUI().setVisible(true);
-    });
-    mainPanel.add(userManagementButton);
-
-    // زر إدارة الطلاب
-    JButton studentManagementButton = new JButton("إدارة الطلاب");
-    studentManagementButton.setFont(new Font("Arial", Font.BOLD, 16));
-    studentManagementButton.setBackground(new Color(255, 140, 0));
-    studentManagementButton.setForeground(Color.WHITE);
-    studentManagementButton.setFocusPainted(false);
-    studentManagementButton.addActionListener(e -> {
-        homeDialog.dispose();
-        // افتح واجهة إدارة الطلاب (إذا كانت موجودة)
-        new StudentManagementUI().setVisible(true);
-    });
-    mainPanel.add(studentManagementButton);
-
-    homeDialog.add(mainPanel);
-    homeDialog.setVisible(true);
 }
 
     // تحديث جدول الكتب

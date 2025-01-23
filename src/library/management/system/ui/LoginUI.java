@@ -1,8 +1,6 @@
 package library.management.system.ui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.*;
@@ -10,19 +8,19 @@ import library.management.system.dao.DatabaseConnection;
 import library.management.system.dao.UserDAO;
 
 public class LoginUI extends JFrame {
-    private JTextField userIdField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton signUpButton;
+    private JTextField userIdField; 
+    private JPasswordField passwordField; 
+    private JButton loginButton, signUpButton;
 
+    // Constructor لتهيئة الواجهة
     public LoginUI() {
         // إعداد الإطار الرئيسي
         setTitle("تسجيل الدخول - نظام إدارة المكتبة");
-        setSize(800, 600); // زيادة حجم النافذة
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // لجعل النافذة في وسط الشاشة
 
-        // إنشاء لوحة رئيسية
+        // إنشاء اللوحة الرئيسية
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(new Color(245, 245, 245)); // لون خلفية فاتح
@@ -77,17 +75,8 @@ public class LoginUI extends JFrame {
 
         // زر تسجيل الدخول
         loginButton = new JButton("تسجيل الدخول");
-        loginButton.setFont(new Font("Arial", Font.BOLD, 20)); // زيادة حجم الخط
-        loginButton.setBackground(new Color(70, 130, 180)); // لون أزرق
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFocusPainted(false); // إزالة الحدود الزائدة
-        loginButton.setPreferredSize(new Dimension(200, 50)); // زيادة حجم الزر
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleLogin();
-            }
-        });
+        customizeButton(loginButton, new Color(70, 130, 180)); // تخصيص الزر
+        loginButton.addActionListener(e -> handleLogin()); // إضافة حدث النقر
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
@@ -96,22 +85,13 @@ public class LoginUI extends JFrame {
 
         // زر التسجيل
         signUpButton = new JButton("تسجيل جديد");
-        signUpButton.setFont(new Font("Arial", Font.BOLD, 20)); // زيادة حجم الخط
-        signUpButton.setBackground(new Color(50, 205, 50)); // لون أخضر
-        signUpButton.setForeground(Color.WHITE);
-        signUpButton.setFocusPainted(false);
-        signUpButton.setPreferredSize(new Dimension(200, 50)); // زيادة حجم الزر
-        signUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleSignUp();
-            }
-        });
+        customizeButton(signUpButton, new Color(50, 205, 50)); // تخصيص الزر
+        signUpButton.addActionListener(e -> handleSignUp()); // إضافة حدث النقر
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(signUpButton, gbc);
+        // formPanel.add(signUpButton, gbc);
 
         mainPanel.add(formPanel, BorderLayout.CENTER);
 
@@ -119,6 +99,7 @@ public class LoginUI extends JFrame {
         add(mainPanel);
     }
 
+    // دالة لتسجيل الدخول
     private void handleLogin() {
         String userId = userIdField.getText();
         String password = new String(passwordField.getPassword());
@@ -132,8 +113,7 @@ public class LoginUI extends JFrame {
             UserDAO userDAO = new UserDAO(connection);
             if (userDAO.validateUser(userId, password)) {
                 JOptionPane.showMessageDialog(this, "تم تسجيل الدخول بنجاح!", "نجاح", JOptionPane.INFORMATION_MESSAGE);
-                // افتح واجهة إدارة الكتب
-                new BookManagementUI().setVisible(true);
+                new BookManagementUI().setVisible(true); // افتح واجهة إدارة الكتب
                 dispose(); // إغلاق نافذة تسجيل الدخول
             } else {
                 JOptionPane.showMessageDialog(this, "اسم المستخدم أو كلمة المرور غير صحيحة!", "خطأ", JOptionPane.ERROR_MESSAGE);
@@ -143,6 +123,7 @@ public class LoginUI extends JFrame {
         }
     }
 
+    // دالة للتسجيل
     private void handleSignUp() {
         String userId = userIdField.getText();
         String password = new String(passwordField.getPassword());
@@ -154,16 +135,24 @@ public class LoginUI extends JFrame {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             UserDAO userDAO = new UserDAO(connection);
-            userDAO.addUser(userId, password);
+            userDAO.addUser(userId, password); // إضافة مستخدم جديد
             JOptionPane.showMessageDialog(this, "تم تسجيل المستخدم بنجاح!", "نجاح", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "فشل في تسجيل المستخدم: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // دالة لتخصيص الأزرار
+    private void customizeButton(JButton button, Color color) {
+        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(200, 50));
+    }
+
+    // Main method لتشغيل الواجهة
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new LoginUI().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new LoginUI().setVisible(true));
     }
 }

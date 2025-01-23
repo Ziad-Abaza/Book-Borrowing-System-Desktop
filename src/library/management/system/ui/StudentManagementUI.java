@@ -11,82 +11,63 @@ import library.management.system.dao.StudentDAO;
 import library.management.system.model.Student;
 
 public class StudentManagementUI extends JFrame {
-    private JTable studentTable;
-    private JButton addStudentButton, deleteStudentButton, updateStudentButton, searchStudentButton;
-    private JTextField searchField;
+    private JTable studentTable; // جدول لعرض الطلاب
+    private JButton addStudentButton, deleteStudentButton, updateStudentButton, searchStudentButton; // أزرار الإدارة
+    private JTextField searchField; // حقل البحث
 
+    // Constructor لتهيئة الواجهة
     public StudentManagementUI() {
         // إعداد الإطار الرئيسي
         setTitle("إدارة الطلاب - نظام إدارة المكتبة");
-        setSize(1000, 600);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // لجعل النافذة في وسط الشاشة
 
-        // إنشاء لوحة رئيسية
+        // إنشاء اللوحة الرئيسية
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 245, 245));
+        mainPanel.setBackground(new Color(245, 245, 245)); // لون خلفية اللوحة
 
-        // لوحة العنوان
-        JPanel titlePanel = new JPanel(new BorderLayout());
-        titlePanel.setBackground(new Color(70, 130, 180));
-
-        // عنوان الواجهة
-        JLabel titleLabel = new JLabel("إدارة الطلاب");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        titleLabel.setForeground(Color.WHITE);
-        titlePanel.add(titleLabel, BorderLayout.CENTER);
-
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
+        // إضافة HeaderPanel (لوحة العنوان)
+        HeaderPanel headerPanel = new HeaderPanel("إدارة الطلاب");
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
 
         // لوحة الجدول
         JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // هامش حول الجدول
 
         // إنشاء جدول الطلاب
         studentTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(studentTable);
+        JScrollPane scrollPane = new JScrollPane(studentTable); // إضافة شريط تمرير للجدول
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
         // لوحة الأزرار
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // تخطيط الأزرار
 
         // زر إضافة طالب
         addStudentButton = new JButton("إضافة طالب");
-        addStudentButton.setFont(new Font("Arial", Font.BOLD, 16));
-        addStudentButton.setBackground(new Color(50, 205, 50));
-        addStudentButton.setForeground(Color.WHITE);
-        addStudentButton.setFocusPainted(false);
-        addStudentButton.addActionListener(e -> handleAddStudent());
+        customizeButton(addStudentButton, new Color(50, 205, 50)); // تخصيص الزر
+        addStudentButton.addActionListener(e -> handleAddStudent()); // إضافة حدث النقر
         buttonPanel.add(addStudentButton);
 
         // زر حذف طالب
         deleteStudentButton = new JButton("حذف طالب");
-        deleteStudentButton.setFont(new Font("Arial", Font.BOLD, 16));
-        deleteStudentButton.setBackground(new Color(220, 20, 60));
-        deleteStudentButton.setForeground(Color.WHITE);
-        deleteStudentButton.setFocusPainted(false);
-        deleteStudentButton.addActionListener(e -> handleDeleteStudent());
+        customizeButton(deleteStudentButton, new Color(220, 20, 60)); // تخصيص الزر
+        deleteStudentButton.addActionListener(e -> handleDeleteStudent()); // إضافة حدث النقر
         buttonPanel.add(deleteStudentButton);
 
         // زر تعديل طالب
         updateStudentButton = new JButton("تعديل طالب");
-        updateStudentButton.setFont(new Font("Arial", Font.BOLD, 16));
-        updateStudentButton.setBackground(new Color(70, 130, 180));
-        updateStudentButton.setForeground(Color.WHITE);
-        updateStudentButton.setFocusPainted(false);
-        updateStudentButton.addActionListener(e -> handleUpdateStudent());
+        customizeButton(updateStudentButton, new Color(70, 130, 180)); // تخصيص الزر
+        updateStudentButton.addActionListener(e -> handleUpdateStudent()); // إضافة حدث النقر
         buttonPanel.add(updateStudentButton);
 
         // زر بحث عن طالب
         searchStudentButton = new JButton("بحث عن طالب");
-        searchStudentButton.setFont(new Font("Arial", Font.BOLD, 16));
-        searchStudentButton.setBackground(new Color(255, 140, 0));
-        searchStudentButton.setForeground(Color.WHITE);
-        searchStudentButton.setFocusPainted(false);
-        searchStudentButton.addActionListener(e -> handleSearchStudent());
+        customizeButton(searchStudentButton, new Color(255, 140, 0)); // تخصيص الزر
+        searchStudentButton.addActionListener(e -> handleSearchStudent()); // إضافة حدث النقر
         buttonPanel.add(searchStudentButton);
 
         // حقل البحث
@@ -105,11 +86,11 @@ public class StudentManagementUI extends JFrame {
         refreshStudentTable();
     }
 
-    // تحديث جدول الطلاب
+    // دالة لتحديث جدول الطلاب
     private void refreshStudentTable() {
         try (Connection connection = DatabaseConnection.getConnection()) {
             StudentDAO studentDAO = new StudentDAO(connection);
-            List<Student> students = studentDAO.getAllStudents();
+            List<Student> students = studentDAO.getAllStudents(); // جلب جميع الطلاب من قاعدة البيانات
 
             // تحويل قائمة الطلاب إلى نموذج جدول
             String[] columnNames = {"ID", "الاسم", "التخصص", "القسم", "الفصل"};
@@ -123,13 +104,13 @@ public class StudentManagementUI extends JFrame {
                 data[i][4] = student.getSemester();
             }
 
-            studentTable.setModel(new DefaultTableModel(data, columnNames));
+            studentTable.setModel(new DefaultTableModel(data, columnNames)); // تعيين النموذج للجدول
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "فشل في جلب البيانات: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // إضافة طالب
+    // دالة لإضافة طالب جديد
     private void handleAddStudent() {
         JTextField nameField = new JTextField();
         JTextField courseField = new JTextField();
@@ -156,15 +137,15 @@ public class StudentManagementUI extends JFrame {
                 student.setBranch(branchField.getText());
                 student.setSemester(semesterField.getText());
 
-                studentDAO.addStudent(student);
-                refreshStudentTable();
+                studentDAO.addStudent(student); // إضافة الطالب
+                refreshStudentTable(); // تحديث الجدول
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "فشل في إضافة الطالب: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    // حذف طالب
+    // دالة لحذف طالب
     private void handleDeleteStudent() {
         int selectedRow = studentTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -175,14 +156,14 @@ public class StudentManagementUI extends JFrame {
         int studentId = (int) studentTable.getValueAt(selectedRow, 0);
         try (Connection connection = DatabaseConnection.getConnection()) {
             StudentDAO studentDAO = new StudentDAO(connection);
-            studentDAO.deleteStudent(studentId);
-            refreshStudentTable();
+            studentDAO.deleteStudent(studentId); // حذف الطالب
+            refreshStudentTable(); // تحديث الجدول
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "فشل في حذف الطالب: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // تعديل طالب
+    // دالة لتعديل طالب
     private void handleUpdateStudent() {
         int selectedRow = studentTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -216,15 +197,15 @@ public class StudentManagementUI extends JFrame {
                 student.setCourse(courseField.getText());
                 student.setBranch(branchField.getText());
                 student.setSemester(semesterField.getText());
-                studentDAO.updateStudent(student);
-                refreshStudentTable();
+                studentDAO.updateStudent(student); // تحديث الطالب
+                refreshStudentTable(); // تحديث الجدول
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "فشل في تعديل الطالب: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // بحث عن طالب
+    // دالة للبحث عن طالب
     private void handleSearchStudent() {
         String searchText = searchField.getText().trim();
         if (searchText.isEmpty()) {
@@ -253,9 +234,16 @@ public class StudentManagementUI extends JFrame {
         }
     }
 
+    // دالة لتخصيص الأزرار
+    private void customizeButton(JButton button, Color color) {
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+    }
+
+    // Main method لتشغيل الواجهة
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new StudentManagementUI().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new StudentManagementUI().setVisible(true));
     }
 }
