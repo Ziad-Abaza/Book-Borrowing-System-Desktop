@@ -19,7 +19,7 @@
 
 ## Introduction
 
-This project is a **Book Borrowing System** developed as a **college project** to manage library operations efficiently. It is a **desktop application** built using **Java** for the backend logic and **Java Swing** for the user interface. The system integrates with a **MySQL database** to store and manage data related to books, students, and users.
+This project is a **Book Borrowing System** developed as a **college project** to manage library operations efficiently. It is a **desktop application** built using **Java** for the backend logic and **Java Swing** for the user interface. The system integrates with a **SQLite database** to store and manage data related to books, students, and users.
 
 The application provides a comprehensive set of features for librarians to manage books, issue and return books, manage student information, and handle user accounts. It is designed to streamline library operations and improve the overall management process.
 
@@ -45,7 +45,7 @@ The application provides a comprehensive set of features for librarians to manag
    - **View issued books** and **overdue books**.
 
 ### 4. **Database Integration**
-   - Uses **MySQL** for data storage.
+   - Uses **SQLite** for data storage.
    - Supports **CRUD operations** for books, students, and users.
    - Efficiently manages relationships between books and students.
 
@@ -55,10 +55,11 @@ The application provides a comprehensive set of features for librarians to manag
 
 - **Programming Language**: Java
 - **User Interface**: Java Swing
-- **Database**: MySQL
+- **Database**: SQLite
 - **Database Connectivity**: JDBC (Java Database Connectivity)
 - **Libraries/Packages**:
   - `sqlite-jdbc-3.48.0.0.jar` (Located in `Book-Borrowing-System-Desktop\packages\`)
+  - `mysql-connector-java-8.0.15.jar` (Located in `Book-Borrowing-System-Desktop\packages\`)
 - **Version Control**: Git
 
 ---
@@ -68,8 +69,7 @@ The application provides a comprehensive set of features for librarians to manag
 ### Prerequisites
 
 1. **Java Development Kit (JDK)**: Ensure JDK 8 or higher is installed.
-2. **MySQL Server**: Install MySQL and set up a database named `javalibrary`.
-3. **MySQL Connector/J**: Download the MySQL JDBC driver and add it to your project's classpath.
+2. **SQLite**: No additional setup is required as SQLite is embedded.
 
 ### Steps to Run the Project
 
@@ -78,21 +78,17 @@ The application provides a comprehensive set of features for librarians to manag
    git clone https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop.git
    ```
 
-2. **Set Up the Database**:
-   - Run the provided SQL script (`database.sql`) to create the necessary tables in your MySQL database.
-   - Update the `DatabaseConnection` class with your MySQL credentials (URL, username, password).
+2. **Import the Project**:
+   - Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse, NetBeans).
 
-3. **Import the Project**:
-   - Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse).
+3. **Add Required Libraries**:
+   - Ensure that the `sqlite-jdbc-3.48.0.0.jar` and `mysql-connector-java-8.0.15.jar` files are added to your project's classpath. These files are located in the `packages` folder.
 
-4. **Add Required Libraries**:
-   - Ensure that the `sqlite-jdbc-3.48.0.0.jar` file is added to your project's classpath. This file is located in the `packages` folder.
-
-5. **Run the Application**:
+4. **Run the Application**:
    - Locate the `LoginUI` class in the `library.management.system.ui` package.
    - Run the `LoginUI` class to start the application.
 
-6. **Login Credentials**:
+5. **Login Credentials**:
    - Use the following default credentials to log in (or create new users via the UI):
      - **User ID**: `admin`
      - **Password**: `admin`
@@ -151,39 +147,6 @@ The database consists of the following tables:
 3. **`login` Table**:
    - Stores user credentials (user ID and password).
 
-### SQL Script
-
-```sql
-CREATE TABLE `book` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `publisher` varchar(100) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `status` enum('available','issued') DEFAULT 'available',
-  `issuedate` date DEFAULT NULL,
-  `duedate` date DEFAULT NULL,
-  `studentid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `studentid` (`studentid`),
-  CONSTRAINT `book_ibfk_1` FOREIGN KEY (`studentid`) REFERENCES `student` (`id`)
-);
-
-CREATE TABLE `login` (
-  `userid` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`userid`)
-);
-
-CREATE TABLE `student` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `course` varchar(100) NOT NULL,
-  `branch` varchar(50) NOT NULL,
-  `semester` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-```
-
 ---
 
 ## Project Structure
@@ -202,10 +165,11 @@ Book-Borrowing-System-Desktop/
 │   │   └── ...
 │   └── ...
 ├── packages/
-│   └── sqlite-jdbc-3.48.0.0.jar      # SQLite JDBC library
-├── screenshots/                      # Screenshots of the application
-├── README.md                         # Project documentation
-└── database.sql                      # SQL script for database setup
+│   └── sqlite-jdbc-3.48.0.0.jar        # SQLite JDBC library
+│   └── mysql-connector-java-8.0.15.jar # MySQL JDBC library
+├── screenshots/                        # Screenshots of the application
+├── README.md                           # Project documentation
+└── database.sql                        # SQL script for database setup
 ```
 
 ---
@@ -213,6 +177,8 @@ Book-Borrowing-System-Desktop/
 ## Contributors
 
 - **Ziad Abaza** - Project Developer
+- **Omar AlGamel** - Contributor ([GitHub](https://github.com/algamelomer))
+- **Youssaf Mohamed** - Contributor ([GitHub](https://github.com/Youssaf-Mohamed))
 - **College Name** - Borg El Arab Technological University
 
 ---
