@@ -70,6 +70,7 @@ The application provides a comprehensive set of features for librarians to manag
 
 1. **Java Development Kit (JDK)**: Ensure JDK 8 or higher is installed.
 2. **SQLite**: No additional setup is required as SQLite is embedded.
+3. **NetBeans IDE**: Ensure NetBeans IDE is installed.
 
 ### Steps to Run the Project
 
@@ -78,15 +79,26 @@ The application provides a comprehensive set of features for librarians to manag
    git clone https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop.git
    ```
 
-2. **Import the Project**:
-   - Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse, NetBeans).
+2. **Open the Project in NetBeans**:
+   - Launch NetBeans IDE.
+   - Go to **File > Open Project**.
+   - Navigate to the cloned repository folder (`Book-Borrowing-System-Desktop`) and select it.
+   - Click **Open**.
 
 3. **Add Required Libraries**:
-   - Ensure that the `sqlite-jdbc-3.48.0.0.jar` and `mysql-connector-java-8.0.15.jar` files are added to your project's classpath. These files are located in the `packages` folder.
+   - Right-click on the project name in the **Projects** tab.
+   - Select **Properties**.
+   - In the left menu, click on **Libraries**.
+   - Under the **Compile** tab, click **Add JAR/Folder**.
+   - Navigate to the `packages` folder inside the project directory.
+   - Select both `sqlite-jdbc-3.48.0.0.jar` and `mysql-connector-java-8.0.15.jar`.
+   - Click **Open** to add the libraries.
+   - Click **OK** to save the changes.
 
 4. **Run the Application**:
    - Locate the `LoginUI` class in the `library.management.system.ui` package.
-   - Run the `LoginUI` class to start the application.
+   - Right-click on the `LoginUI` class and select **Run File**.
+   - The application will start, and the login window will appear.
 
 5. **Login Credentials**:
    - Use the following default credentials to log in (or create new users via the UI):
