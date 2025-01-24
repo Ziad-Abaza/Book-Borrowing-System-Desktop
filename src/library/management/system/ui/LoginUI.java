@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 import library.management.system.dao.DatabaseConnection;
 import library.management.system.dao.UserDAO;
+import library.management.system.Session;
 
 public class LoginUI extends JFrame {
     private JTextField userIdField; 
@@ -112,6 +113,7 @@ public class LoginUI extends JFrame {
         try (Connection connection = DatabaseConnection.getConnection()) {
             UserDAO userDAO = new UserDAO(connection);
             if (userDAO.validateUser(userId, password)) {
+                Session.login(userId); // session started
                 JOptionPane.showMessageDialog(this, "تم تسجيل الدخول بنجاح!", "نجاح", JOptionPane.INFORMATION_MESSAGE);
                 new BookManagementUI().setVisible(true); // افتح واجهة إدارة الكتب
                 dispose(); // إغلاق نافذة تسجيل الدخول

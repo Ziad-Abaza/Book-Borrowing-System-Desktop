@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import library.management.system.Session;
 import library.management.system.dao.DatabaseConnection;
 import library.management.system.dao.UserDAO;
 import library.management.system.model.User;
@@ -16,6 +18,11 @@ public class UserManagementUI extends JFrame {
 
     // Constructor لتهيئة الواجهة
     public UserManagementUI() {
+        if (!Session.isLoggedIn()) {
+            JOptionPane.showMessageDialog(this, "يجب تسجيل الدخول أولاً!", "خطأ", JOptionPane.ERROR_MESSAGE);
+            new LoginUI().setVisible(true);
+            dispose();
+        }
         // إعداد الإطار الرئيسي
         setTitle("إدارة المستخدمين - نظام إدارة المكتبة");
         setSize(800, 600);
