@@ -26,9 +26,10 @@ public class BookManagementUI extends JFrame {
 
     public BookManagementUI() {
         if (!Session.isLoggedIn()) {
-            JOptionPane.showMessageDialog(this, "يجب تسجيل الدخول أولاً!", "خطأ", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "يجب تسجيل الدخول أولاً!", "خطأ", JOptionPane.ERROR_MESSAGE);
             new LoginUI().setVisible(true);
             dispose();
+            return;
         }
         // إعداد الإطار الرئيسي
         setTitle("إدارة المستخدمين - نظام إدارة المكتبة");

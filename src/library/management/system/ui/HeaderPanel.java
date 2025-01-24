@@ -78,6 +78,19 @@ public class HeaderPanel extends JPanel {
         });
         mainPanel.add(studentManagementButton);
 
+        // زر إدارة الإعدادات
+        JButton SettingsManagementButton = new JButton("إدارة الاعدادات");
+        SettingsManagementButton.setFont(new Font("Arial", Font.BOLD, 16));
+        SettingsManagementButton.setBackground(new Color(70, 130, 180));
+        SettingsManagementButton.setForeground(Color.WHITE);
+        SettingsManagementButton.setFocusPainted(false);
+        SettingsManagementButton.addActionListener(e -> {
+            homeDialog.dispose();
+            new SettingsManagementUI().setVisible(true);
+            topFrame.dispose();
+        });
+        mainPanel.add(SettingsManagementButton);
+
         homeDialog.add(mainPanel);
         homeDialog.setVisible(true);
     }
