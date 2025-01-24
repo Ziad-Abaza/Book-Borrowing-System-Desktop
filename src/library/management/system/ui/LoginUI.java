@@ -91,7 +91,7 @@ public class LoginUI extends JFrame {
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        // formPanel.add(signUpButton, gbc);
+        formPanel.add(signUpButton, gbc);
 
         mainPanel.add(formPanel, BorderLayout.CENTER);
 

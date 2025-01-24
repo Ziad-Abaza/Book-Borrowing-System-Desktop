@@ -1,23 +1,20 @@
 package library.management.system.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/javaLibrary";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
-    
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private static final String URL = "jdbc:sqlite:library.db";
+    public static Connection getConnection() {
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(URL);
+            System.out.println("Connection to SQLite has been established.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
     }
 
-    public static void main(String[] args) {
-        try (Connection connection = getConnection()) {
-            System.out.println("تم الاتصال بقاعدة البيانات بنجاح!");
-        } catch (SQLException e) {
-            System.err.println("فشل الاتصال بقاعدة البيانات: " + e.getMessage());
-        }
-    }
+
 }
