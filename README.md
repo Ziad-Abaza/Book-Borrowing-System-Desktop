@@ -57,6 +57,8 @@ The application provides a comprehensive set of features for librarians to manag
 - **User Interface**: Java Swing
 - **Database**: MySQL
 - **Database Connectivity**: JDBC (Java Database Connectivity)
+- **Libraries/Packages**:
+  - `sqlite-jdbc-3.48.0.0.jar` (Located in `Book-Borrowing-System-Desktop\packages\`)
 - **Version Control**: Git
 
 ---
@@ -83,11 +85,14 @@ The application provides a comprehensive set of features for librarians to manag
 3. **Import the Project**:
    - Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse).
 
-4. **Run the Application**:
+4. **Add Required Libraries**:
+   - Ensure that the `sqlite-jdbc-3.48.0.0.jar` file is added to your project's classpath. This file is located in the `packages` folder.
+
+5. **Run the Application**:
    - Locate the `LoginUI` class in the `library.management.system.ui` package.
    - Run the `LoginUI` class to start the application.
 
-5. **Login Credentials**:
+6. **Login Credentials**:
    - Use the following default credentials to log in (or create new users via the UI):
      - **User ID**: `admin`
      - **Password**: `admin`
@@ -120,16 +125,16 @@ The application provides a comprehensive set of features for librarians to manag
 ## Screenshots
 
 ### Login Page
-![Login Page](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/login.png)
+![Login Page](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/login.png)
 
 ### Book Management Page
-![Book Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/book.png)
+![Book Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/book.png)
 
 ### Student Management Page
-![Student Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/student.png)
+![Student Management](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/student.png)
 
 ### User Management Page
-![Issue Book](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/user.png)
+![Issue Book](https://github.com/Ziad-Abaza/Book-Borrowing-System-Desktop/blob/main/screenshots/user.png)
 
 ---
 
@@ -196,6 +201,8 @@ Book-Borrowing-System-Desktop/
 │   │   │   └── ...
 │   │   └── ...
 │   └── ...
+├── packages/
+│   └── sqlite-jdbc-3.48.0.0.jar      # SQLite JDBC library
 ├── screenshots/                      # Screenshots of the application
 ├── README.md                         # Project documentation
 └── database.sql                      # SQL script for database setup
