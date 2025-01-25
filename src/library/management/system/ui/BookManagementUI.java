@@ -286,228 +286,228 @@ public class BookManagementUI extends JFrame {
     }
 
     // بحث عن كتاب
-private void handleSearchBook() {
-    String searchText = searchField.getText().trim();
+    private void handleSearchBook() {
+        String searchText = searchField.getText().trim();
 
-    try (Connection connection = DatabaseConnection.getConnection()) {
-        BookDAO bookDAO = new BookDAO(connection);
-        List<Book> books = bookDAO.getAllBooks();
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            BookDAO bookDAO = new BookDAO(connection);
+            List<Book> books = bookDAO.getAllBooks();
 
-        DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
-        model.setRowCount(0); // مسح الجدول الحالي
+            DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+            model.setRowCount(0); // مسح الجدول الحالي
 
-        for (Book book : books) {
-            // إذا كان حقل البحث فارغًا أو اسم الكتاب يحتوي على النص المدخل
-            if (searchText.isEmpty() || book.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                model.addRow(new Object[] {
-                        book.getId(),
-                        book.getName(),
-                        book.getPublisher(),
-                        book.getPrice(),
-                        book.getStatus(),
-                        book.getIssueDate(), // عرض التاريخ كنص
-                        book.getDueDate(),   // عرض التاريخ كنص
-                        book.getStudentId()
-                });
-            }
-        }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "فشل في البحث: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
-    }
-}
-
-    // إعارة كتاب
-private void handleIssueBook() {
-    int selectedRow = bookTable.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "يرجى اختيار كتاب للإعارة!", "خطأ", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    int bookId = (int) bookTable.getValueAt(selectedRow, 0);
-
-    // إنشاء نافذة البحث التلقائي
-    JDialog searchDialog = new JDialog(this, "إعارة كتاب", true);
-    searchDialog.setSize(400, 300);
-    searchDialog.setLocationRelativeTo(this);
-
-    JPanel mainPanel = new JPanel(new BorderLayout());
-    mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-    // حقل البحث
-    JTextField searchField = new JTextField();
-    searchField.setFont(new Font("Arial", Font.PLAIN, 16));
-    mainPanel.add(searchField, BorderLayout.NORTH);
-
-    // قائمة عرض النتائج
-    DefaultListModel<String> listModel = new DefaultListModel<>();
-    JList<String> resultList = new JList<>(listModel);
-    resultList.setFont(new Font("Arial", Font.PLAIN, 16));
-    JScrollPane scrollPane = new JScrollPane(resultList);
-    mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-    // زر الإعارة
-    JButton issueButton = new JButton("إعارة الكتاب");
-    issueButton.setFont(new Font("Arial", Font.BOLD, 16));
-    issueButton.setBackground(new Color(70, 130, 180));
-    issueButton.setForeground(Color.WHITE);
-    issueButton.setFocusPainted(false);
-    mainPanel.add(issueButton, BorderLayout.SOUTH);
-
-    searchDialog.add(mainPanel);
-
-    // DocumentListener للبحث التلقائي
-    searchField.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            searchStudents();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            searchStudents();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            searchStudents();
-        }
-
-        private void searchStudents() {
-            String searchText = searchField.getText().trim();
-            if (searchText.isEmpty()) {
-                listModel.clear();
-                return;
-            }
-
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                StudentDAO studentDAO = new StudentDAO(connection);
-                List<Student> students = studentDAO.searchStudentsByName(searchText);
-
-                listModel.clear();
-                for (Student student : students) {
-                    listModel.addElement(student.getName() + " - " + student.getCourse());
+            for (Book book : books) {
+                // إذا كان حقل البحث فارغًا أو اسم الكتاب يحتوي على النص المدخل
+                if (searchText.isEmpty() || book.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                    model.addRow(new Object[] {
+                            book.getId(),
+                            book.getName(),
+                            book.getPublisher(),
+                            book.getPrice(),
+                            book.getStatus(),
+                            book.getIssueDate(), // عرض التاريخ كنص
+                            book.getDueDate(),   // عرض التاريخ كنص
+                            book.getStudentId()
+                    });
                 }
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(searchDialog, "فشل في البحث: " + ex.getMessage(), "خطأ",
-                        JOptionPane.ERROR_MESSAGE);
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "فشل في البحث: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
         }
-    });
+    }
 
-    // معالجة اختيار الطالب وإعارة الكتاب
-    issueButton.addActionListener(e -> {
-        String selectedStudent = resultList.getSelectedValue();
-        if (selectedStudent == null) {
-            // إذا لم يتم اختيار طالب، يتم فتح نافذة لإدخال بيانات الطالب الجديد
-            addNewStudentAndIssueBook(bookId, searchDialog, searchField.getText());
+        // إعارة كتاب
+    private void handleIssueBook() {
+        int selectedRow = bookTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "يرجى اختيار كتاب للإعارة!", "خطأ", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // استخراج اسم الطالب من النص المعروض
-        String studentName = selectedStudent.split(" - ")[0];
+        int bookId = (int) bookTable.getValueAt(selectedRow, 0);
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            StudentDAO studentDAO = new StudentDAO(connection);
-            BookDAO bookDAO = new BookDAO(connection);
+        // إنشاء نافذة البحث التلقائي
+        JDialog searchDialog = new JDialog(this, "إعارة كتاب", true);
+        searchDialog.setSize(400, 300);
+        searchDialog.setLocationRelativeTo(this);
 
-            // البحث عن الطالب بالاسم
-            List<Student> students = studentDAO.searchStudentsByName(studentName);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-            if (students.isEmpty()) {
-                // إذا لم يتم العثور على الطالب، يتم فتح نافذة لإدخال بيانات الطالب الجديد
-                addNewStudentAndIssueBook(bookId, searchDialog, studentName);
+        // حقل البحث
+        JTextField searchField = new JTextField();
+        searchField.setFont(new Font("Arial", Font.PLAIN, 16));
+        mainPanel.add(searchField, BorderLayout.NORTH);
+
+        // قائمة عرض النتائج
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        JList<String> resultList = new JList<>(listModel);
+        resultList.setFont(new Font("Arial", Font.PLAIN, 16));
+        JScrollPane scrollPane = new JScrollPane(resultList);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // زر الإعارة
+        JButton issueButton = new JButton("إعارة الكتاب");
+        issueButton.setFont(new Font("Arial", Font.BOLD, 16));
+        issueButton.setBackground(new Color(70, 130, 180));
+        issueButton.setForeground(Color.WHITE);
+        issueButton.setFocusPainted(false);
+        mainPanel.add(issueButton, BorderLayout.SOUTH);
+
+        searchDialog.add(mainPanel);
+
+        // DocumentListener للبحث التلقائي
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                searchStudents();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                searchStudents();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                searchStudents();
+            }
+
+            private void searchStudents() {
+                String searchText = searchField.getText().trim();
+                if (searchText.isEmpty()) {
+                    listModel.clear();
+                    return;
+                }
+
+                try (Connection connection = DatabaseConnection.getConnection()) {
+                    StudentDAO studentDAO = new StudentDAO(connection);
+                    List<Student> students = studentDAO.searchStudentsByName(searchText);
+
+                    listModel.clear();
+                    for (Student student : students) {
+                        listModel.addElement(student.getName() + " - " + student.getCourse());
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(searchDialog, "فشل في البحث: " + ex.getMessage(), "خطأ",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // معالجة اختيار الطالب وإعارة الكتاب
+        issueButton.addActionListener(e -> {
+            String selectedStudent = resultList.getSelectedValue();
+            if (selectedStudent == null) {
+                // إذا لم يتم اختيار طالب، يتم فتح نافذة لإدخال بيانات الطالب الجديد
+                addNewStudentAndIssueBook(bookId, searchDialog, searchField.getText());
                 return;
             }
 
-            // استخدام الطالب الأول من القائمة
-            Student student = students.get(0);
+            // استخراج اسم الطالب من النص المعروض
+            String studentName = selectedStudent.split(" - ")[0];
 
-            // فتح نافذة تحديد تاريخ الاسترداد
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this);
-            datePickerDialog.setVisible(true);
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                StudentDAO studentDAO = new StudentDAO(connection);
+                BookDAO bookDAO = new BookDAO(connection);
 
-            if (datePickerDialog.isConfirmed()) {
-                String dueDate = datePickerDialog.getSelectedDate();
+                // البحث عن الطالب بالاسم
+                List<Student> students = studentDAO.searchStudentsByName(studentName);
 
-                // إعارة الكتاب للطالب
+                if (students.isEmpty()) {
+                    // إذا لم يتم العثور على الطالب، يتم فتح نافذة لإدخال بيانات الطالب الجديد
+                    addNewStudentAndIssueBook(bookId, searchDialog, studentName);
+                    return;
+                }
+
+                // استخدام الطالب الأول من القائمة
+                Student student = students.get(0);
+
+                // فتح نافذة تحديد تاريخ الاسترداد
+                DatePickerDialog datePickerDialog = new DatePickerDialog(this);
+                datePickerDialog.setVisible(true);
+
+                if (datePickerDialog.isConfirmed()) {
+                    String dueDate = datePickerDialog.getSelectedDate();
+
+                    // إعارة الكتاب للطالب
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String issueDate = dateFormat.format(new java.util.Date()); // التاريخ الحالي
+
+                    bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
+                    refreshBookTable();
+                    JOptionPane.showMessageDialog(searchDialog, "تم إعارة الكتاب بنجاح!", "نجاح",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    searchDialog.dispose(); // إغلاق نافذة البحث
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(searchDialog, "فشل في إعارة الكتاب: " + ex.getMessage(), "خطأ",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        searchDialog.setVisible(true);
+    }
+    // إضافة طالب جديد وإعارة الكتاب له
+    private void addNewStudentAndIssueBook(int bookId, JDialog parentDialog, String studentName) {
+        JTextField nameField = new JTextField(studentName);
+        JTextField courseField = new JTextField();
+        JTextField branchField = new JTextField();
+        JTextField semesterField = new JTextField();
+
+        JPanel panel = new JPanel(new GridLayout(4, 2));
+        panel.add(new JLabel("اسم الطالب:"));
+        panel.add(nameField);
+        panel.add(new JLabel("التخصص:"));
+        panel.add(courseField);
+        panel.add(new JLabel("القسم:"));
+        panel.add(branchField);
+        panel.add(new JLabel("الفصل:"));
+        panel.add(semesterField);
+
+        int result = JOptionPane.showConfirmDialog(parentDialog, panel, "إضافة طالب جديد",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                StudentDAO studentDAO = new StudentDAO(connection);
+                BookDAO bookDAO = new BookDAO(connection);
+
+                // إنشاء طالب جديد
+                Student newStudent = new Student();
+                newStudent.setName(nameField.getText());
+                newStudent.setCourse(courseField.getText());
+                newStudent.setBranch(branchField.getText());
+                newStudent.setSemester(semesterField.getText());
+
+                // إضافة الطالب إلى قاعدة البيانات
+                studentDAO.addStudent(newStudent);
+
+                // البحث عن الطالب المضاف حديثًا
+                List<Student> students = studentDAO.searchStudentsByName(newStudent.getName());
+
+                if (students.isEmpty()) {
+                    throw new SQLException("فشل في العثور على الطالب المضاف حديثًا.");
+                }
+
+                // استخدام الطالب الأول من القائمة
+                Student student = students.get(0);
+
+                // إعارة الكتاب للطالب الجديد
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String issueDate = dateFormat.format(new java.util.Date()); // التاريخ الحالي
+                String dueDate = dateFormat.format(new java.util.Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // بعد أسبوع
 
                 bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
                 refreshBookTable();
-                JOptionPane.showMessageDialog(searchDialog, "تم إعارة الكتاب بنجاح!", "نجاح",
+                JOptionPane.showMessageDialog(parentDialog, "تم إضافة الطالب وإعارة الكتاب بنجاح!", "نجاح",
                         JOptionPane.INFORMATION_MESSAGE);
-                searchDialog.dispose(); // إغلاق نافذة البحث
+                parentDialog.dispose(); // إغلاق نافذة البحث
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(parentDialog, "فشل في إضافة الطالب أو إعارة الكتاب: " + ex.getMessage(),
+                        "خطأ", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(searchDialog, "فشل في إعارة الكتاب: " + ex.getMessage(), "خطأ",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    });
-
-    searchDialog.setVisible(true);
-}
- // إضافة طالب جديد وإعارة الكتاب له
-private void addNewStudentAndIssueBook(int bookId, JDialog parentDialog, String studentName) {
-    JTextField nameField = new JTextField(studentName);
-    JTextField courseField = new JTextField();
-    JTextField branchField = new JTextField();
-    JTextField semesterField = new JTextField();
-
-    JPanel panel = new JPanel(new GridLayout(4, 2));
-    panel.add(new JLabel("اسم الطالب:"));
-    panel.add(nameField);
-    panel.add(new JLabel("التخصص:"));
-    panel.add(courseField);
-    panel.add(new JLabel("القسم:"));
-    panel.add(branchField);
-    panel.add(new JLabel("الفصل:"));
-    panel.add(semesterField);
-
-    int result = JOptionPane.showConfirmDialog(parentDialog, panel, "إضافة طالب جديد",
-            JOptionPane.OK_CANCEL_OPTION);
-    if (result == JOptionPane.OK_OPTION) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            StudentDAO studentDAO = new StudentDAO(connection);
-            BookDAO bookDAO = new BookDAO(connection);
-
-            // إنشاء طالب جديد
-            Student newStudent = new Student();
-            newStudent.setName(nameField.getText());
-            newStudent.setCourse(courseField.getText());
-            newStudent.setBranch(branchField.getText());
-            newStudent.setSemester(semesterField.getText());
-
-            // إضافة الطالب إلى قاعدة البيانات
-            studentDAO.addStudent(newStudent);
-
-            // البحث عن الطالب المضاف حديثًا
-            List<Student> students = studentDAO.searchStudentsByName(newStudent.getName());
-
-            if (students.isEmpty()) {
-                throw new SQLException("فشل في العثور على الطالب المضاف حديثًا.");
-            }
-
-            // استخدام الطالب الأول من القائمة
-            Student student = students.get(0);
-
-            // إعارة الكتاب للطالب الجديد
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String issueDate = dateFormat.format(new java.util.Date()); // التاريخ الحالي
-            String dueDate = dateFormat.format(new java.util.Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // بعد أسبوع
-
-            bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
-            refreshBookTable();
-            JOptionPane.showMessageDialog(parentDialog, "تم إضافة الطالب وإعارة الكتاب بنجاح!", "نجاح",
-                    JOptionPane.INFORMATION_MESSAGE);
-            parentDialog.dispose(); // إغلاق نافذة البحث
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(parentDialog, "فشل في إضافة الطالب أو إعارة الكتاب: " + ex.getMessage(),
-                    "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
 
     // إعادة كتاب
     private void handleReturnBook() {
@@ -529,50 +529,49 @@ private void addNewStudentAndIssueBook(int bookId, JDialog parentDialog, String 
     }
 
     // استعراض الكتب المعارة
-// استعراض الكتب المعارة
-private void handleViewIssuedBooks() {
-    try (Connection connection = DatabaseConnection.getConnection()) {
-        BookDAO bookDAO = new BookDAO(connection);
-        StudentDAO studentDAO = new StudentDAO(connection);
+    private void handleViewIssuedBooks() {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            BookDAO bookDAO = new BookDAO(connection);
+            StudentDAO studentDAO = new StudentDAO(connection);
 
-        List<Book> issuedBooks = bookDAO.getAllBooks().stream()
-                .filter(book -> "issued".equals(book.getStatus()))
-                .toList();
+            List<Book> issuedBooks = bookDAO.getAllBooks().stream()
+                    .filter(book -> "issued".equals(book.getStatus()))
+                    .toList();
 
-        String[] columnNames = { "ID", "الاسم", "الناشر", "السعر", "تاريخ الإعارة", "تاريخ الاستحقاق", "الطالب" };
-        Object[][] data = new Object[issuedBooks.size()][7];
+            String[] columnNames = { "ID", "الاسم", "الناشر", "السعر", "تاريخ الإعارة", "تاريخ الاستحقاق", "الطالب" };
+            Object[][] data = new Object[issuedBooks.size()][7];
 
-        for (int i = 0; i < issuedBooks.size(); i++) {
-            Book book = issuedBooks.get(i);
-            data[i][0] = book.getId();
-            data[i][1] = book.getName();
-            data[i][2] = book.getPublisher();
-            data[i][3] = book.getPrice();
-            data[i][4] = book.getIssueDate();
-            data[i][5] = book.getDueDate();
+            for (int i = 0; i < issuedBooks.size(); i++) {
+                Book book = issuedBooks.get(i);
+                data[i][0] = book.getId();
+                data[i][1] = book.getName();
+                data[i][2] = book.getPublisher();
+                data[i][3] = book.getPrice();
+                data[i][4] = book.getIssueDate();
+                data[i][5] = book.getDueDate();
 
-            // استرداد اسم الطالب باستخدام studentId
-            int studentId = book.getStudentId();
-            if (studentId != 0) { // تأكد من وجود معرف طالب صالح
-                Student student = studentDAO.getStudentById(studentId);
-                if (student != null) {
-                    data[i][6] = student.getName(); // عرض اسم الطالب بدلاً من المعرف
+                // استرداد اسم الطالب باستخدام studentId
+                int studentId = book.getStudentId();
+                if (studentId != 0) { // تأكد من وجود معرف طالب صالح
+                    Student student = studentDAO.getStudentById(studentId);
+                    if (student != null) {
+                        data[i][6] = student.getName(); // عرض اسم الطالب بدلاً من المعرف
+                    } else {
+                        data[i][6] = "غير معروف"; // إذا لم يتم العثور على الطالب
+                    }
                 } else {
-                    data[i][6] = "غير معروف"; // إذا لم يتم العثور على الطالب
+                    data[i][6] = "غير معروف"; // إذا لم يكن هناك طالب مرتبط
                 }
-            } else {
-                data[i][6] = "غير معروف"; // إذا لم يكن هناك طالب مرتبط
             }
-        }
 
-        JTable issuedBooksTable = new JTable(data, columnNames);
-        JScrollPane scrollPane = new JScrollPane(issuedBooksTable);
-        JOptionPane.showMessageDialog(this, scrollPane, "الكتب المعارة", JOptionPane.INFORMATION_MESSAGE);
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "فشل في جلب البيانات: " + e.getMessage(), "خطأ",
-                JOptionPane.ERROR_MESSAGE);
+            JTable issuedBooksTable = new JTable(data, columnNames);
+            JScrollPane scrollPane = new JScrollPane(issuedBooksTable);
+            JOptionPane.showMessageDialog(this, scrollPane, "الكتب المعارة", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "فشل في جلب البيانات: " + e.getMessage(), "خطأ",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
     // استعراض الطلاب الذين استعاروا كتبًا
     private void handleViewStudentsWithBooks() {
         try (Connection connection = DatabaseConnection.getConnection()) {

@@ -4,9 +4,9 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.*;
+import library.management.system.Session;
 import library.management.system.dao.DatabaseConnection;
 import library.management.system.dao.UserDAO;
-import library.management.system.Session;
 
 public class LoginUI extends JFrame {
     private JTextField userIdField; 
@@ -92,7 +92,7 @@ public class LoginUI extends JFrame {
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(signUpButton, gbc);
+        // formPanel.add(signUpButton, gbc);
 
         mainPanel.add(formPanel, BorderLayout.CENTER);
 

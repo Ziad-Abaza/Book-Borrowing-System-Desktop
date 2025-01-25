@@ -7,13 +7,15 @@
 2. [Features](#features)
 3. [Technologies Used](#technologies-used)
 4. [Installation](#installation)
-5. [Usage](#usage)
-6. [Screenshots](#screenshots)
-7. [Database Schema](#database-schema)
-8. [Project Structure](#project-structure)
-9. [Contributors](#contributors)
-10. [License](#license)
-11. [Contact](#contact)
+5. [Database Setup](#database-setup) 
+6. [Usage](#usage)
+7. [Settings Management](#settings-management) 
+8. [Screenshots](#screenshots)
+9. [Database Schema](#database-schema)
+10. [Project Structure](#project-structure)
+11. [Contributors](#contributors)
+12. [License](#license)
+13. [Contact](#contact)
 
 ---
 
@@ -107,6 +109,37 @@ The application provides a comprehensive set of features for librarians to manag
 
 ---
 
+## Database Setup 
+
+### **Creating the Database**
+The database is automatically created and initialized when you run the application for the first time. The `DbGenerator` class handles the creation of tables and insertion of default data.
+
+### **Database Initialization**
+The following tables are created:
+1. **`book` Table**:
+   - Stores book details such as name, publisher, price, status, issue date, due date, and student ID (if issued).
+2. **`student` Table**:
+   - Stores student details such as name, course, branch, and semester.
+3. **`login` Table**:
+   - Stores user credentials (user ID and password).
+4. **`settings` Table**:
+   - Stores system settings such as default loan period, daily fines, and maximum books per student.
+
+### **Default Data**
+- **Admin User**:
+  - User ID: `admin`
+  - Password: `admin`
+- **Books**:
+  - A list of 10 default books is inserted into the `book` table.
+- **Students**:
+  - A list of 10 default students is inserted into the `student` table.
+- **Settings**:
+  - Default loan period: 7 days
+  - Daily fine: 1.0
+  - Maximum books per student: 5
+
+---
+
 ## Usage
 
 1. **Login**:
@@ -127,6 +160,29 @@ The application provides a comprehensive set of features for librarians to manag
 5. **Reports**:
    - View a list of issued books.
    - View a list of students with overdue books.
+
+---
+
+## Settings Management 
+
+### **Overview**
+The **Settings Management** feature allows administrators to configure system settings, including:
+- **Default Loan Period**: The number of days a book can be borrowed.
+- **Daily Fine**: The fine amount charged per day for overdue books.
+- **Maximum Books**: The maximum number of books a student can borrow at a time.
+
+### **How to Use**
+1. **Access Settings**:
+   - Navigate to the **Settings Management** section from the main menu.
+2. **Change Password**:
+   - Enter your old password, new password, and confirm the new password.
+   - Click **Save Changes** to update your password.
+3. **Configure Loan Settings**:
+   - Enter the desired values for:
+     - Default Loan Period (in days).
+     - Daily Fine (in currency).
+     - Maximum Books (per student).
+   - Click **Save Changes** to update the settings.
 
 ---
 
@@ -158,6 +214,9 @@ The database consists of the following tables:
 
 3. **`login` Table**:
    - Stores user credentials (user ID and password).
+
+4. **`settings` Table**:
+   - Stores system settings such as default loan period, daily fines, and maximum books per student.
 
 ---
 
@@ -210,3 +269,4 @@ For any queries or feedback, please contact:
 ---
 
 Thank you for checking out the **Book Borrowing System**! We hope this project serves as a useful resource for your college studies and beyond. 🚀
+```
