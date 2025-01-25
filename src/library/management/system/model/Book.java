@@ -1,15 +1,13 @@
 package library.management.system.model;
 
-import java.sql.Date;
-
 public class Book {
     private int id;
     private String name;
     private String publisher;
     private double price;
     private String status; // يمكن أن تكون القيم: "available" أو "issued"
-    private Date issueDate;
-    private Date dueDate;
+    private String issueDate; // تم تغيير النوع إلى String
+    private String dueDate;   // تم تغيير النوع إلى String
     private int studentId; // ID الطالب الذي استعار الكتاب (إذا كان مستعارًا)
 
     // Constructor without parameters
@@ -17,7 +15,7 @@ public class Book {
     }
 
     // Constructor with parameters
-    public Book(int id, String name, String publisher, double price, String status, Date issueDate, Date dueDate, int studentId) {
+    public Book(int id, String name, String publisher, double price, String status, String issueDate, String dueDate, int studentId) {
         this.id = id;
         this.name = name;
         this.publisher = publisher;
@@ -69,19 +67,19 @@ public class Book {
         this.status = status;
     }
 
-    public Date getIssueDate() {
+    public String getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(Date issueDate) {
+    public void setIssueDate(String issueDate) {
         this.issueDate = issueDate;
     }
 
-    public Date getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -99,7 +97,7 @@ public class Book {
     }
 
     // Issue the book to a student
-    public void issueBook(int studentId, Date issueDate, Date dueDate) {
+    public void issueBook(int studentId, String issueDate, String dueDate) {
         if (isAvailable()) {
             this.studentId = studentId;
             this.issueDate = issueDate;
@@ -117,7 +115,7 @@ public class Book {
         this.dueDate = null;
         this.status = "available";
     }
-    
+
     // toString method to display book information
     @Override
     public String toString() {

@@ -2,14 +2,13 @@ package library.management.system.ui;
 
 import java.awt.*;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-
 import library.management.system.Session;
 import library.management.system.dao.BookDAO;
 import library.management.system.dao.DatabaseConnection;
@@ -309,8 +308,8 @@ public class BookManagementUI extends JFrame {
                             book.getPublisher(),
                             book.getPrice(),
                             book.getStatus(),
-                            book.getIssueDate(),
-                            book.getDueDate(),
+                            book.getIssueDate(), // عرض التاريخ كنص
+                            book.getDueDate(),   // عرض التاريخ كنص
                             book.getStudentId()
                     });
                 }
@@ -428,8 +427,10 @@ public class BookManagementUI extends JFrame {
                 Student student = students.get(0);
 
                 // إعارة الكتاب للطالب
-                Date issueDate = new Date(System.currentTimeMillis());
-                Date dueDate = new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000); // بعد أسبوع
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String issueDate = dateFormat.format(new java.util.Date()); // التاريخ الحالي
+                String dueDate = dateFormat.format(new java.util.Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // بعد أسبوع
+
                 bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
                 refreshBookTable();
                 JOptionPane.showMessageDialog(searchDialog, "تم إعارة الكتاب بنجاح!", "نجاح",
@@ -444,64 +445,66 @@ public class BookManagementUI extends JFrame {
         searchDialog.setVisible(true);
     }
 
-    // إضافة طالب جديد وإعارة الكتاب له
-    private void addNewStudentAndIssueBook(int bookId, JDialog parentDialog, String studentName) {
-        JTextField nameField = new JTextField(studentName);
-        JTextField courseField = new JTextField();
-        JTextField branchField = new JTextField();
-        JTextField semesterField = new JTextField();
+ // إضافة طالب جديد وإعارة الكتاب له
+private void addNewStudentAndIssueBook(int bookId, JDialog parentDialog, String studentName) {
+    JTextField nameField = new JTextField(studentName);
+    JTextField courseField = new JTextField();
+    JTextField branchField = new JTextField();
+    JTextField semesterField = new JTextField();
 
-        JPanel panel = new JPanel(new GridLayout(4, 2));
-        panel.add(new JLabel("اسم الطالب:"));
-        panel.add(nameField);
-        panel.add(new JLabel("التخصص:"));
-        panel.add(courseField);
-        panel.add(new JLabel("القسم:"));
-        panel.add(branchField);
-        panel.add(new JLabel("الفصل:"));
-        panel.add(semesterField);
+    JPanel panel = new JPanel(new GridLayout(4, 2));
+    panel.add(new JLabel("اسم الطالب:"));
+    panel.add(nameField);
+    panel.add(new JLabel("التخصص:"));
+    panel.add(courseField);
+    panel.add(new JLabel("القسم:"));
+    panel.add(branchField);
+    panel.add(new JLabel("الفصل:"));
+    panel.add(semesterField);
 
-        int result = JOptionPane.showConfirmDialog(parentDialog, panel, "إضافة طالب جديد",
-                JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                StudentDAO studentDAO = new StudentDAO(connection);
-                BookDAO bookDAO = new BookDAO(connection);
+    int result = JOptionPane.showConfirmDialog(parentDialog, panel, "إضافة طالب جديد",
+            JOptionPane.OK_CANCEL_OPTION);
+    if (result == JOptionPane.OK_OPTION) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            StudentDAO studentDAO = new StudentDAO(connection);
+            BookDAO bookDAO = new BookDAO(connection);
 
-                // إنشاء طالب جديد
-                Student newStudent = new Student();
-                newStudent.setName(nameField.getText());
-                newStudent.setCourse(courseField.getText());
-                newStudent.setBranch(branchField.getText());
-                newStudent.setSemester(semesterField.getText());
+            // إنشاء طالب جديد
+            Student newStudent = new Student();
+            newStudent.setName(nameField.getText());
+            newStudent.setCourse(courseField.getText());
+            newStudent.setBranch(branchField.getText());
+            newStudent.setSemester(semesterField.getText());
 
-                // إضافة الطالب إلى قاعدة البيانات
-                studentDAO.addStudent(newStudent);
+            // إضافة الطالب إلى قاعدة البيانات
+            studentDAO.addStudent(newStudent);
 
-                // البحث عن الطالب المضاف حديثًا
-                List<Student> students = studentDAO.searchStudentsByName(newStudent.getName());
+            // البحث عن الطالب المضاف حديثًا
+            List<Student> students = studentDAO.searchStudentsByName(newStudent.getName());
 
-                if (students.isEmpty()) {
-                    throw new SQLException("فشل في العثور على الطالب المضاف حديثًا.");
-                }
-
-                // استخدام الطالب الأول من القائمة
-                Student student = students.get(0);
-
-                // إعارة الكتاب للطالب الجديد
-                Date issueDate = new Date(System.currentTimeMillis());
-                Date dueDate = new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000); // بعد أسبوع
-                bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
-                refreshBookTable();
-                JOptionPane.showMessageDialog(parentDialog, "تم إضافة الطالب وإعارة الكتاب بنجاح!", "نجاح",
-                        JOptionPane.INFORMATION_MESSAGE);
-                parentDialog.dispose(); // إغلاق نافذة البحث
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(parentDialog, "فشل في إضافة الطالب أو إعارة الكتاب: " + ex.getMessage(),
-                        "خطأ", JOptionPane.ERROR_MESSAGE);
+            if (students.isEmpty()) {
+                throw new SQLException("فشل في العثور على الطالب المضاف حديثًا.");
             }
+
+            // استخدام الطالب الأول من القائمة
+            Student student = students.get(0);
+
+            // إعارة الكتاب للطالب الجديد
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String issueDate = dateFormat.format(new java.util.Date()); // التاريخ الحالي
+            String dueDate = dateFormat.format(new java.util.Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // بعد أسبوع
+
+            bookDAO.issueBook(bookId, student.getId(), issueDate, dueDate);
+            refreshBookTable();
+            JOptionPane.showMessageDialog(parentDialog, "تم إضافة الطالب وإعارة الكتاب بنجاح!", "نجاح",
+                    JOptionPane.INFORMATION_MESSAGE);
+            parentDialog.dispose(); // إغلاق نافذة البحث
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(parentDialog, "فشل في إضافة الطالب أو إعارة الكتاب: " + ex.getMessage(),
+                    "خطأ", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
 
     // إعادة كتاب
     private void handleReturnBook() {

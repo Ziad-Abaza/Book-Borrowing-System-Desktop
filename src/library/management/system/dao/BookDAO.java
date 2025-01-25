@@ -1,6 +1,8 @@
 package library.management.system.dao;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import library.management.system.model.Book;
@@ -8,6 +10,7 @@ import library.management.system.model.Student;
 
 public class BookDAO {
     private Connection connection;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // تنسيق التاريخ
 
     public BookDAO(Connection connection) {
         this.connection = connection;
@@ -38,8 +41,8 @@ public class BookDAO {
                 book.setPublisher(rs.getString("publisher"));
                 book.setPrice(rs.getDouble("price"));
                 book.setStatus(rs.getString("status"));
-                book.setIssueDate(rs.getDate("issuedate"));
-                book.setDueDate(rs.getDate("duedate"));
+                book.setIssueDate(rs.getString("issuedate")); // استخدام النص بدلاً من التاريخ
+                book.setDueDate(rs.getString("duedate"));     // استخدام النص بدلاً من التاريخ
                 book.setStudentId(rs.getInt("studentid"));
                 books.add(book);
             }
@@ -55,8 +58,8 @@ public class BookDAO {
             stmt.setString(2, book.getPublisher());
             stmt.setDouble(3, book.getPrice());
             stmt.setString(4, book.getStatus());
-            stmt.setDate(5, book.getIssueDate());
-            stmt.setDate(6, book.getDueDate());
+            stmt.setString(5, book.getIssueDate()); // استخدام النص بدلاً من التاريخ
+            stmt.setString(6, book.getDueDate());   // استخدام النص بدلاً من التاريخ
             stmt.setInt(7, book.getStudentId());
             stmt.setInt(8, book.getId());
             stmt.executeUpdate();
@@ -85,8 +88,8 @@ public class BookDAO {
                     book.setPublisher(rs.getString("publisher"));
                     book.setPrice(rs.getDouble("price"));
                     book.setStatus(rs.getString("status"));
-                    book.setIssueDate(rs.getDate("issuedate"));
-                    book.setDueDate(rs.getDate("duedate"));
+                    book.setIssueDate(rs.getString("issuedate")); // استخدام النص بدلاً من التاريخ
+                    book.setDueDate(rs.getString("duedate"));     // استخدام النص بدلاً من التاريخ
                     book.setStudentId(rs.getInt("studentid"));
                     return book;
                 }
@@ -96,11 +99,11 @@ public class BookDAO {
     }
 
     // Issue a book to a student
-    public void issueBook(int bookId, int studentId, Date issueDate, Date dueDate) throws SQLException {
+    public void issueBook(int bookId, int studentId, String issueDate, String dueDate) throws SQLException {
         String query = "UPDATE book SET status = 'issued', issuedate = ?, duedate = ?, studentid = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setDate(1, issueDate);
-            stmt.setDate(2, dueDate);
+            stmt.setString(1, issueDate); // استخدام النص بدلاً من التاريخ
+            stmt.setString(2, dueDate);   // استخدام النص بدلاً من التاريخ
             stmt.setInt(3, studentId);
             stmt.setInt(4, bookId);
             stmt.executeUpdate();
@@ -118,10 +121,10 @@ public class BookDAO {
 
     // Get all books issued to a student
     public List<Student> getStudentsWithIssuedBooks() throws SQLException {
-    List<Student> students = new ArrayList<>();
-    String query = "SELECT s.* FROM student s JOIN book b ON s.id = b.studentid WHERE b.status = 'issued'";
-    try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query)) {
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT s.* FROM student s JOIN book b ON s.id = b.studentid WHERE b.status = 'issued'";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Student student = new Student();
                 student.setId(rs.getInt("id"));
@@ -137,10 +140,10 @@ public class BookDAO {
 
     // Get all students with overdue books
     public List<Student> getStudentsWithOverdueBooks() throws SQLException {
-    List<Student> students = new ArrayList<>();
-    String query = "SELECT s.* FROM student s JOIN book b ON s.id = b.studentid WHERE b.status = 'issued' AND b.duedate < CURDATE()";
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT s.* FROM student s JOIN book b ON s.id = b.studentid WHERE b.status = 'issued' AND b.duedate < date('now')";
         try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query)) {
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Student student = new Student();
                 student.setId(rs.getInt("id"));
