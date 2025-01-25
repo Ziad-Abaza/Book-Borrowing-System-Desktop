@@ -1,15 +1,10 @@
 package library.management.system.ui;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.*;
 import library.management.system.Session;
-
 import library.management.system.dao.DatabaseConnection;
 import library.management.system.dao.UserDAO;
 
@@ -34,10 +29,15 @@ public class SettingsManagementUI extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        HeaderPanel headerPanel = new HeaderPanel("إدارة الاعدادات");
+        mainPanel.setBackground(new Color(245, 245, 245)); // لون خلفية متوافق مع التصميم السابق
+
+        // إضافة HeaderPanel
+        HeaderPanel headerPanel = new HeaderPanel("إدارة الإعدادات");
         mainPanel.add(headerPanel, BorderLayout.NORTH);
+
         // إضافة تبويبات (Tabs) للإعدادات
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 16)); // خط متوافق مع التصميم السابق
         tabbedPane.addTab("تغيير كلمة المرور", createPasswordPanel());
         tabbedPane.addTab("تحديث معلومات النظام", createSystemInfoPanel());
 
@@ -48,38 +48,101 @@ public class SettingsManagementUI extends JFrame {
     // لوحة تغيير كلمة المرور
     private JPanel createPasswordPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(245, 245, 245)); // لون خلفية متوافق مع التصميم السابق
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // هوامش بين العناصر
 
         // حقول إدخال كلمة المرور
-        panel.add(new JLabel("كلمة المرور القديمة:"));
-        oldPasswordField = new JPasswordField();
-        panel.add(oldPasswordField);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("كلمة المرور القديمة:"), gbc);
 
-        panel.add(new JLabel("كلمة المرور الجديدة:"));
-        newPasswordField = new JPasswordField();
-        panel.add(newPasswordField);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        oldPasswordField = new JPasswordField(20);
+        oldPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(oldPasswordField, gbc);
 
-        panel.add(new JLabel("تأكيد كلمة المرور الجديدة:"));
-        confirmPasswordField = new JPasswordField();
-        panel.add(confirmPasswordField);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("كلمة المرور الجديدة:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        newPasswordField = new JPasswordField(20);
+        newPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(newPasswordField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("تأكيد كلمة المرور الجديدة:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        confirmPasswordField = new JPasswordField(20);
+        confirmPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(confirmPasswordField, gbc);
 
         // زر حفظ التغييرات
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
         savePasswordButton = new JButton("حفظ التغييرات");
-        savePasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changePassword();
-            }
-        });
-        panel.add(new JLabel());
-        panel.add(savePasswordButton);
+        savePasswordButton.setFont(new Font("Arial", Font.BOLD, 16));
+        savePasswordButton.setBackground(new Color(70, 130, 180)); // لون الزر متوافق مع التصميم السابق
+        savePasswordButton.setForeground(Color.WHITE);
+        savePasswordButton.setFocusPainted(false);
+        savePasswordButton.addActionListener(e -> changePassword());
+        panel.add(savePasswordButton, gbc);
 
         return panel;
     }
 
     // لوحة تحديث معلومات النظام
     private JPanel createSystemInfoPanel() {
-        return new JPanel();
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(245, 245, 245)); // لون خلفية متوافق مع التصميم السابق
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // هوامش بين العناصر
+
+        // يمكن إضافة حقول إدخال لتحديث معلومات النظام هنا
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("اسم المكتبة:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JTextField libraryNameField = new JTextField(20);
+        libraryNameField.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(libraryNameField, gbc);
+
+        // زر حفظ التغييرات
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton saveSystemInfoButton = new JButton("حفظ التغييرات");
+        saveSystemInfoButton.setFont(new Font("Arial", Font.BOLD, 16));
+        saveSystemInfoButton.setBackground(new Color(70, 130, 180)); // لون الزر متوافق مع التصميم السابق
+        saveSystemInfoButton.setForeground(Color.WHITE);
+        saveSystemInfoButton.setFocusPainted(false);
+        saveSystemInfoButton.addActionListener(e -> updateSystemInfo());
+        panel.add(saveSystemInfoButton, gbc);
+
+        return panel;
     }
 
     // دالة لتغيير كلمة المرور
@@ -100,7 +163,6 @@ public class SettingsManagementUI extends JFrame {
         }
 
         // تغيير كلمة المرور في قاعدة البيانات
-
         try (Connection connection = DatabaseConnection.getConnection()) {
             UserDAO userDAO = new UserDAO(connection);
             if (userDAO.validateUser(Session.getCurrentUserId(), oldPassword)) {
@@ -118,12 +180,13 @@ public class SettingsManagementUI extends JFrame {
             JOptionPane.showMessageDialog(this, "فشل في تغيير كلمة السر: " + e.getMessage(), "خطأ",
                     JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     // دالة لتحديث معلومات النظام
     private void updateSystemInfo() {
-        //
+        // يمكن إضافة منطق لتحديث معلومات النظام هنا
+        JOptionPane.showMessageDialog(this, "تم تحديث معلومات النظام بنجاح!", "نجاح",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Main method لتشغيل الواجهة

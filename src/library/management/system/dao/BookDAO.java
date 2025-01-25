@@ -1,7 +1,6 @@
 package library.management.system.dao;
 
 import java.sql.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import library.management.system.model.Student;
 
 public class BookDAO {
     private Connection connection;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // تنسيق التاريخ
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
 
     public BookDAO(Connection connection) {
         this.connection = connection;
@@ -41,8 +40,8 @@ public class BookDAO {
                 book.setPublisher(rs.getString("publisher"));
                 book.setPrice(rs.getDouble("price"));
                 book.setStatus(rs.getString("status"));
-                book.setIssueDate(rs.getString("issuedate")); // استخدام النص بدلاً من التاريخ
-                book.setDueDate(rs.getString("duedate"));     // استخدام النص بدلاً من التاريخ
+                book.setIssueDate(rs.getString("issuedate")); 
+                book.setDueDate(rs.getString("duedate"));    
                 book.setStudentId(rs.getInt("studentid"));
                 books.add(book);
             }
@@ -58,8 +57,8 @@ public class BookDAO {
             stmt.setString(2, book.getPublisher());
             stmt.setDouble(3, book.getPrice());
             stmt.setString(4, book.getStatus());
-            stmt.setString(5, book.getIssueDate()); // استخدام النص بدلاً من التاريخ
-            stmt.setString(6, book.getDueDate());   // استخدام النص بدلاً من التاريخ
+            stmt.setString(5, book.getIssueDate()); 
+            stmt.setString(6, book.getDueDate());   
             stmt.setInt(7, book.getStudentId());
             stmt.setInt(8, book.getId());
             stmt.executeUpdate();
@@ -88,8 +87,8 @@ public class BookDAO {
                     book.setPublisher(rs.getString("publisher"));
                     book.setPrice(rs.getDouble("price"));
                     book.setStatus(rs.getString("status"));
-                    book.setIssueDate(rs.getString("issuedate")); // استخدام النص بدلاً من التاريخ
-                    book.setDueDate(rs.getString("duedate"));     // استخدام النص بدلاً من التاريخ
+                    book.setIssueDate(rs.getString("issuedate")); 
+                    book.setDueDate(rs.getString("duedate"));    
                     book.setStudentId(rs.getInt("studentid"));
                     return book;
                 }
@@ -99,16 +98,16 @@ public class BookDAO {
     }
 
     // Issue a book to a student
-    public void issueBook(int bookId, int studentId, String issueDate, String dueDate) throws SQLException {
-        String query = "UPDATE book SET status = 'issued', issuedate = ?, duedate = ?, studentid = ? WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, issueDate); // استخدام النص بدلاً من التاريخ
-            stmt.setString(2, dueDate);   // استخدام النص بدلاً من التاريخ
-            stmt.setInt(3, studentId);
-            stmt.setInt(4, bookId);
-            stmt.executeUpdate();
-        }
+public void issueBook(int bookId, int studentId, String issueDate, String dueDate) throws SQLException {
+    String query = "UPDATE book SET status = 'issued', issuedate = ?, duedate = ?, studentid = ? WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        stmt.setString(1, issueDate); 
+        stmt.setString(2, dueDate);   
+        stmt.setInt(3, studentId);
+        stmt.setInt(4, bookId);
+        stmt.executeUpdate();
     }
+}
 
     // Return a book
     public void returnBook(int bookId) throws SQLException {
