@@ -1,8 +1,13 @@
 package library.management.system.ui;
 
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import javax.swing.*;
+import library.management.system.dao.DatabaseConnection;
 
 public class DatePickerDialog extends JDialog {
     private JComboBox<Integer> dayComboBox;
@@ -51,6 +56,15 @@ public class DatePickerDialog extends JDialog {
         monthComboBox.setSelectedIndex(currentMonth);
         yearComboBox.setSelectedItem(currentYearValue);
 
+        // إضافة فترة الإعارة الافتراضية
+        int defaultLoanPeriod = getDefaultLoanPeriod();
+        if (defaultLoanPeriod > 0) {
+            calendar.add(Calendar.DAY_OF_MONTH, defaultLoanPeriod); // إضافة فترة الإعارة إلى التاريخ الحالي
+            dayComboBox.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
+            monthComboBox.setSelectedIndex(calendar.get(Calendar.MONTH));
+            yearComboBox.setSelectedItem(calendar.get(Calendar.YEAR));
+        }
+
         mainPanel.add(new JLabel("اليوم:"));
         mainPanel.add(dayComboBox);
         mainPanel.add(new JLabel("الشهر:"));
@@ -92,5 +106,23 @@ public class DatePickerDialog extends JDialog {
             return String.format("%04d-%02d-%02d", year, month, day);
         }
         return null;
+    }
+
+    // دالة للحصول على فترة الإعارة الافتراضية من جدول settings
+    private int getDefaultLoanPeriod() {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "SELECT value FROM settings WHERE key = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setString(1, "default_loan_period");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return Integer.parseInt(rs.getString("value"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "فشل في تحميل فترة الإعارة الافتراضية: " + e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
+        }
+        return 7; // قيمة افتراضية إذا لم يتم العثور على الإعداد
     }
 }
