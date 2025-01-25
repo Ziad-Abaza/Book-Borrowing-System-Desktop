@@ -269,4 +269,3 @@ For any queries or feedback, please contact:
 ---
 
 Thank you for checking out the **Book Borrowing System**! We hope this project serves as a useful resource for your college studies and beyond. 🚀
-```
